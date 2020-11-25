@@ -67,10 +67,11 @@ serverQlab.on('message', (msg) => {
     if(msg[0].includes('/number') && msg[0].includes('/reply')){
         parse = JSON.parse(msg[1])
         currentCue = parse.data
+        //clientZoom.send('/zoom/chat', 'SM', `-- standing by cue: "${currentCue}" --`)
         setTimeout(() => {
             clientZoom.send('/zoom/chat', 'SM', `-- standing by cue: "${currentCue}" --`)
             console.log(`\n'${currentCue}' - Qlab Cue Stading By\n`)
-        }, 200); 
+        }, 400); 
         
         //console.log(currentCue)
     }
