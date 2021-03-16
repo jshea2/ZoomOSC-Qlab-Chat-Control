@@ -92,14 +92,14 @@ serverZoom.on('message', (msg) => {
 
     console.log(msg.toString())
     
-    if (msg[0] === "/zoomosc/chat" && msg[2] === "SM" && msg[3] === ";" || msg[3] === "G" || msg[3] === "g"){
+    if (msg[0] === " /zoomosc/user/chat" && msg[2] === "SM" && msg[5] === ";" || msg[5] === "G" || msg[5] === "g"){
         console.log("\nSM Triggered a 'GO' Command to Qlab\n")
         client.send(`/go`, (err) => {  //Takes OBS Scene Name and Sends it Out as OSC String (Along with Prefix and Suffix)
             if (err) console.error(err);
           });
     } 
     
-    else if(msg[0] === "/zoomosc/chat" && msg[2] === "SM" && msg[3] === "!"){
+    else if(msg[0] === " /zoomosc/user/chat" && msg[2] === "SM" && msg[5] === "!"){
         console.log("\nSM has Triggered a 'PANIC' to Qlab\n")
         clientZoom.send("/zoom/chat", "SM", "-- PANIC in QLab was Triggered --")
         client.send(`/panic`, (err) => {  //Takes OBS Scene Name and Sends it Out as OSC String (Along with Prefix and Suffix)
@@ -107,7 +107,7 @@ serverZoom.on('message', (msg) => {
           });
     }
 
-    else if(msg[0] === "/zoomosc/chat" && msg[2] === "SM"){
+    else if(msg[0] === " /zoomosc/user/chat" && msg[2] === "SM"){
         if(msg[3].includes("G2q") || msg[3].includes("g2q")){
         var g2qMessage = msg[3].substring(4)
         console.log(`\nSM Triggered Qlab Cue: '${g2qMessage}'\n`)
