@@ -14,7 +14,7 @@ const zoomOSCServerIp = "127.0.0.1";
 const zoomOSCPortIn = 1234;
 //ZoomOSC Client (To ZoomOSC) Config
 const zoomOSCClientIp = "127.0.0.1";
-const zoomOSCPortOut = 8000;
+const zoomOSCPortOut = 9090;
 //QLab OSC Response Server (From Qlab) Config
 const qlabOscServerIp = "127.0.0.1";
 const qlabOscPortIn = 53001;
@@ -35,6 +35,8 @@ server.on('listening', () => {
   console.log('\nSending OSC back to ZoomOSC on...\n IP: ' + zoomOSCClientIp + '\n Port: ' + zoomOSCPortOut + '\n\n---------------------------------------\n\n');
 })
 
+clientZoom.send("/zoom/subscribe", 2)
+
 //Qlab Response to ZoomOSC "SM" Playhead Cue via Chat
 serverQlab.on('message', (msg) => {
      //console.log(msg)
@@ -51,11 +53,11 @@ serverQlab.on('message', (msg) => {
 
         if (runningCue.data[0] !== undefined){
             if (!runningCue.data[2]){
-            clientZoom.send('/zoom/chat', 'SM', `** CUE "${runningCue.data[1].number}" Triggered! **`)
+            clientZoom.send('/zoom/userName/chat', 'SM', `** CUE "${runningCue.data[1].number}" Triggered! **`)
             //clientZoom.send('/zoom/chat', 'SM', `-                                       -`)
         console.log(`Qlab Cue "${runningCue.data[1].number}" was Triggered`)
             } else {
-                clientZoom.send('/zoom/chat', 'SM', `** CUE "${runningCue.data[2].number}" Triggered! **`)
+                clientZoom.send('/zoom/userName/chat', 'SM', `** CUE "${runningCue.data[2].number}" Triggered! **`)
             //clientZoom.send('/zoom/chat', 'SM', `-                                       -`)
         console.log(`Qlab Cue "${runningCue.data[2].number}" was Triggered`)
             }
@@ -69,7 +71,7 @@ serverQlab.on('message', (msg) => {
         currentCue = parse.data
         //clientZoom.send('/zoom/chat', 'SM', `-- standing by cue: "${currentCue}" --`)
         setTimeout(() => {
-            clientZoom.send('/zoom/chat', 'SM', `-- standing by cue: "${currentCue}" --`)
+            clientZoom.send('/zoom/userName/chat', 'SM', `-- standing by cue: "${currentCue}" --`)
             console.log(`\n'${currentCue}' - Qlab Cue Stading By\n`)
         }, 400); 
         
@@ -108,8 +110,8 @@ serverZoom.on('message', (msg) => {
     }
 
     else if(msg[0] === "/zoomosc/user/chat" && msg[2] === "SM"){
-        if(msg[3].includes("G2q") || msg[3].includes("g2q")){
-        var g2qMessage = msg[3].substring(4)
+        if(msg[5].includes("G2q") || msg[5].includes("g2q")){
+        var g2qMessage = msg[5].substring(4)
         console.log(`\nSM Triggered Qlab Cue: '${g2qMessage}'\n`)
         client.send(`/go/${g2qMessage}`);
         }
